@@ -2,6 +2,8 @@
 
 A small React + Vite + TypeScript demo that recreates the core interaction patterns of VS Code's Git conflict resolution experience with Monaco Editor.
 
+![Monaco Git conflict demo overview](./assets/demo-overview.png)
+
 ## Getting started
 
 Install dependencies and start the development server:

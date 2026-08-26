@@ -36,10 +36,7 @@ function addActions(editor: MergeEditor, blocks: readonly ConflictBlock[], side:
       node.append(button);
     };
     addButton(side === 'current' ? 'Accept Current' : 'Accept Incoming', side);
-    addButton(
-      `Accept Combination (${side === 'current' ? 'Current' : 'Incoming'} First)`,
-      side === 'current' ? 'both' : 'both-incoming-first',
-    );
+    addButton('Accept Both', side === 'current' ? 'both' : 'both-incoming-first');
     addButton('Ignore', 'base');
     const widget: monaco.editor.IContentWidget = {
       getId: () => `merge-editor-${side}-${block.id}`,
