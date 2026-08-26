@@ -153,7 +153,7 @@ export default function App() {
             <div className="tree-row folder-root"><IconChevronDown className="tree-chevron" size={11} /><IconFolderOpen className="folder-icon" size={15} /><strong>monaco-git-conflict-demo</strong><IconCircleFilled className="tree-dirty" size={7} /></div>
             <div className="tree-row indent-1"><IconChevronDown className="tree-chevron" size={11} /><IconFolderOpen className="folder-icon" size={15} /><span>src</span></div>
             <div className="tree-row indent-2"><IconChevronDown className="tree-chevron" size={11} /><IconFolderOpen className="folder-icon" size={15} /><span>components</span></div>
-            <div className="tree-row indent-3"><IconBrandTypescript className="file-icon ts" size={14} /><span>MergeEditorDialog.tsx</span></div>
+            <div className="tree-row indent-3"><IconBrandTypescript className="file-icon ts" size={14} /><span>MergeEditorTab.tsx</span></div>
             <div className="tree-row indent-3"><IconBrandTypescript className="file-icon ts" size={14} /><span>SourceEditor.tsx</span></div>
             <div className="tree-row indent-2"><IconChevronDown className="tree-chevron" size={11} /><IconFolderOpen className="folder-icon" size={15} /><span>domain</span></div>
             <div className="tree-row indent-3"><IconBrandTypescript className="file-icon ts" size={14} /><span>conflictParser.ts</span></div>
