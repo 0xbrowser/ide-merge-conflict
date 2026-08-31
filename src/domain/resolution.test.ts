@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseConflicts } from './conflictParser';
 import {
-  ResolutionHistory,
   ResolutionStateLedger,
   combineBoth,
   resolveConflictText,
@@ -135,21 +134,7 @@ b`);
   });
 });
 
-describe('resolution history metadata', () => {
-  it('models undo/redo traversal while Monaco remains the source of text history', () => {
-    const history = new ResolutionHistory();
-    history.record({ conflictId: 'one', choice: 'current', beforeText: 'a', afterText: 'b' });
-    history.record({ conflictId: 'two', choice: 'incoming', beforeText: 'b', afterText: 'c' });
-
-    expect(history.canUndo()).toBe(true);
-    expect(history.undo()?.afterText).toBe('c');
-    expect(history.undo()?.afterText).toBe('b');
-    expect(history.canUndo()).toBe(false);
-    expect(history.redo()?.afterText).toBe('b');
-    expect(history.redo()?.afterText).toBe('c');
-    expect(history.canRedo()).toBe(false);
-  });
-
+describe('resolution state metadata', () => {
   it('restores resolution status when an undo or redo returns to an exact model value', () => {
     const block = firstBlock(oneConflict);
     const after = resolveConflictText(oneConflict, block, 'incoming');

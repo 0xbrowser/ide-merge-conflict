@@ -1,7 +1,6 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { findConflictAtRange, parseConflicts } from '../domain/conflictParser';
 import {
-  ResolutionHistory,
   ResolutionStateLedger,
   replacementTextForRange,
   resolveConflictText,
@@ -14,7 +13,6 @@ export interface ConflictEditorSnapshot {
   readonly totalConflicts: number;
   readonly canUndo: boolean;
   readonly canRedo: boolean;
-  readonly historyLength: number;
   readonly statuses: ReadonlyMap<string, ConflictResolutionStatus>;
 }
 
@@ -107,7 +105,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
   const decorationsRef = useRef<monaco.editor.IEditorDecorationsCollection | undefined>(undefined);
   const actionZoneIdsRef = useRef<string[]>([]);
   const ledgerRef = useRef<ResolutionStateLedger | undefined>(undefined);
-  const historyRef = useRef(new ResolutionHistory());
 
   const removeActionZones = useCallback(() => {
     const editor = editorRef.current;
@@ -132,7 +129,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
 
     const afterText = resolveConflictText(beforeText, block, choice);
     ledgerRef.current.recordAcceptance(beforeText, afterText, block, choice);
-    historyRef.current.record({ conflictId: block.id, choice, beforeText, afterText });
 
     // This is the key contract: executeEdits (not model.setValue) records the
     // edit in Monaco's undo stack. The paired stops keep one Accept atomic.
@@ -213,7 +209,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
       totalConflicts: initialBlocks.length,
       canUndo: model.canUndo(),
       canRedo: model.canRedo(),
-      historyLength: historyRef.current.snapshot().length,
       statuses: ledger.stateFor(model.getValue(), blocks),
     });
   }, [applyResolutionForBlock, initialBlocks.length, onCompare, onContentChange, onSnapshot, removeActionZones]);
@@ -261,7 +256,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
     onReady(model);
     decorationsRef.current = editor.createDecorationsCollection();
     ledgerRef.current = new ResolutionStateLedger(initialText, initialBlocks);
-    historyRef.current = new ResolutionHistory();
     const listener = model.onDidChangeContent(refreshPresentation);
     refreshPresentation();
 

@@ -75,5 +75,4 @@ export const sampleSession: MergeSession = {
   incoming: { kind: 'incoming', label: 'Incoming', ref: 'feature/i18n', text: incoming },
   initialResult,
   conflicts: parseConflicts(initialResult),
-  history: [],
 };

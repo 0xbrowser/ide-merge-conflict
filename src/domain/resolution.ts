@@ -1,7 +1,6 @@
 import { rangeToOffsets } from './conflictParser';
 import type {
   ConflictBlock,
-  ConflictHistoryEntry,
   ConflictResolutionStatus,
   ResolvedResult,
   ResolutionChoice,
@@ -48,46 +47,6 @@ export function replacementTextForRange(text: string, block: ConflictBlock, choi
 export function resolveConflictText(text: string, block: ConflictBlock, choice: ResolutionChoice): string {
   const { start, end } = rangeToOffsets(text, block.range);
   return `${text.slice(0, start)}${replacementTextForRange(text, block, choice)}${text.slice(end)}`;
-}
-
-/**
- * Metadata only. The browser demo does not replay this history; Monaco owns the
- * authoritative undo/redo stack because executeEdits records inverse edits.
- */
-export class ResolutionHistory {
-  private readonly entries: ConflictHistoryEntry[] = [];
-  private cursor = 0;
-
-  record(entry: ConflictHistoryEntry): void {
-    this.entries.splice(this.cursor);
-    this.entries.push(entry);
-    this.cursor = this.entries.length;
-  }
-
-  canUndo(): boolean {
-    return this.cursor > 0;
-  }
-
-  canRedo(): boolean {
-    return this.cursor < this.entries.length;
-  }
-
-  undo(): ConflictHistoryEntry | undefined {
-    if (!this.canUndo()) return undefined;
-    this.cursor -= 1;
-    return this.entries[this.cursor];
-  }
-
-  redo(): ConflictHistoryEntry | undefined {
-    if (!this.canRedo()) return undefined;
-    const entry = this.entries[this.cursor];
-    this.cursor += 1;
-    return entry;
-  }
-
-  snapshot(): readonly ConflictHistoryEntry[] {
-    return this.entries;
-  }
 }
 
 /**

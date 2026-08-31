@@ -56,19 +56,10 @@ export interface ResolvedResult {
   readonly status: ConflictResolutionStatus;
 }
 
-/** App-level metadata; Monaco owns the actual text undo/redo stack. */
-export interface ConflictHistoryEntry {
-  readonly conflictId: string;
-  readonly choice: ResolutionChoice;
-  readonly beforeText: string;
-  readonly afterText: string;
-}
-
 export interface MergeSession {
   readonly base: FileVersion;
   readonly current: FileVersion;
   readonly incoming: FileVersion;
   readonly initialResult: string;
   readonly conflicts: readonly ConflictBlock[];
-  readonly history: readonly ConflictHistoryEntry[];
 }

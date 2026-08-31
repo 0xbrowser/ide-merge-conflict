@@ -43,7 +43,6 @@ const initialSnapshot: ConflictEditorSnapshot = {
   totalConflicts: sampleSession.conflicts.length,
   canUndo: false,
   canRedo: false,
-  historyLength: 0,
   statuses: new Map(sampleSession.conflicts.map((block) => [block.id, 'unresolved'])),
 };
 
@@ -262,7 +261,7 @@ export default function App() {
 
           <section className="bottom-panel" aria-label="Terminal panel">
             <div className="bottom-panel-tabs"><span className="bottom-tab active">TERMINAL</span><span className="bottom-tab">PROBLEMS <b>0</b></span><span className="bottom-tab">OUTPUT</span><span className="bottom-tab">DEBUG CONSOLE</span><span className="bottom-tab">PORTS</span><span className="bottom-panel-spacer" /><div className="bottom-panel-actions"><button className="bottom-panel-action" type="button" aria-label="New terminal"><IconPlus size={14} /></button><button className="bottom-panel-action" type="button" aria-label="More terminal actions"><IconDots size={14} /></button><button className="bottom-panel-action" type="button" aria-label="Toggle panel"><IconChevronUp size={14} /></button></div></div>
-            <div className="terminal-content"><div><span className="terminal-prompt">hongye.guo@monaco-git-conflict-demo</span> <span className="terminal-command">$ npm run dev</span></div><div className="terminal-muted">VITE v7 · Local: http://localhost:5173/</div><div className="terminal-muted">{snapshot.totalConflicts} conflict blocks parsed · {snapshot.historyLength} accept operations recorded</div></div>
+            <div className="terminal-content"><div><span className="terminal-prompt">hongye.guo@monaco-git-conflict-demo</span> <span className="terminal-command">$ npm run dev</span></div><div className="terminal-muted">VITE v7 · Local: http://localhost:5173/</div><div className="terminal-muted">{snapshot.totalConflicts} conflict blocks parsed · Monaco undo/redo enabled</div></div>
           </section>
 
           <footer className="statusbar"><span className="statusbar-item"><IconGitBranch size={12} stroke={1.7} /> main*</span><span className="statusbar-item"><IconGitMerge size={12} stroke={1.7} /> {snapshot.unresolvedCount} conflicts</span><span className="statusbar-spacer" /><span>Ln 54, Col 1</span><span>Spaces: 2</span><span>UTF-8</span><span>LF</span><span>TypeScript</span><span className="statusbar-item"><IconCheck size={12} stroke={1.8} /></span></footer>
