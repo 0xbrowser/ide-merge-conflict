@@ -1,11 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { findConflictAtRange, parseConflicts } from '../domain/conflictParser';
-import {
-  ResolutionStateLedger,
-  replacementTextForRange,
-  resolveConflictText,
-} from '../domain/resolution';
-import type { ConflictBlock, ConflictResolutionStatus, ResolutionChoice } from '../domain/types';
+import { replacementTextForRange } from '../domain/resolution';
+import type { ConflictBlock, ResolutionChoice } from '../domain/types';
 import { monaco } from '../monaco';
 
 export interface ConflictEditorSnapshot {
@@ -13,7 +9,6 @@ export interface ConflictEditorSnapshot {
   readonly totalConflicts: number;
   readonly canUndo: boolean;
   readonly canRedo: boolean;
-  readonly statuses: ReadonlyMap<string, ConflictResolutionStatus>;
 }
 
 export interface ConflictEditorHandle {
@@ -104,7 +99,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | undefined>(undefined);
   const decorationsRef = useRef<monaco.editor.IEditorDecorationsCollection | undefined>(undefined);
   const actionZoneIdsRef = useRef<string[]>([]);
-  const ledgerRef = useRef<ResolutionStateLedger | undefined>(undefined);
 
   const removeActionZones = useCallback(() => {
     const editor = editorRef.current;
@@ -119,16 +113,13 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
   const applyResolutionForBlock = useCallback((requestedBlock: ConflictBlock, choice: ResolutionChoice) => {
     const editor = editorRef.current;
     const model = editor?.getModel();
-    if (!editor || !model || !ledgerRef.current) return;
+    if (!editor || !model) return;
 
     const beforeText = model.getValue();
     // The action zone was created from this exact live range. Matching by range
     // keeps identical marker text in different locations independently actionable.
     const block = findConflictAtRange(parseConflicts(beforeText), requestedBlock.range);
     if (!block) return;
-
-    const afterText = resolveConflictText(beforeText, block, choice);
-    ledgerRef.current.recordAcceptance(beforeText, afterText, block, choice);
 
     // This is the key contract: executeEdits (not model.setValue) records the
     // edit in Monaco's undo stack. The paired stops keep one Accept atomic.
@@ -146,8 +137,7 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
     const editor = editorRef.current;
     const model = editor?.getModel();
     const decorations = decorationsRef.current;
-    const ledger = ledgerRef.current;
-    if (!editor || !model || !decorations || !ledger) return;
+    if (!editor || !model || !decorations) return;
 
     const blocks = parseConflicts(model.getValue());
     onContentChange(model.getValue());
@@ -209,7 +199,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
       totalConflicts: initialBlocks.length,
       canUndo: model.canUndo(),
       canRedo: model.canRedo(),
-      statuses: ledger.stateFor(model.getValue(), blocks),
     });
   }, [applyResolutionForBlock, initialBlocks.length, onCompare, onContentChange, onSnapshot, removeActionZones]);
 
@@ -255,7 +244,6 @@ export const ConflictEditor = forwardRef<ConflictEditorHandle, ConflictEditorPro
     const wheelListener = enableWheelScrolling(editor, host.current);
     onReady(model);
     decorationsRef.current = editor.createDecorationsCollection();
-    ledgerRef.current = new ResolutionStateLedger(initialText, initialBlocks);
     const listener = model.onDidChangeContent(refreshPresentation);
     refreshPresentation();
 

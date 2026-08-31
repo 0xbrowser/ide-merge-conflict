@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseConflicts } from './conflictParser';
 import {
-  ResolutionStateLedger,
   combineBoth,
   resolveConflictText,
 } from './resolution';
@@ -131,17 +130,5 @@ b`);
   it('Merge Editor Ignore keeps the base section', () => {
     const text = ['before', '<<<<<<< HEAD', 'current', '||||||| base', 'base', '=======', 'incoming', '>>>>>>> feature', 'after', ''].join('\n');
     expect(resolveConflictText(text, firstBlock(text), 'base')).toBe('before\nbase\nafter\n');
-  });
-});
-
-describe('resolution state metadata', () => {
-  it('restores resolution status when an undo or redo returns to an exact model value', () => {
-    const block = firstBlock(oneConflict);
-    const after = resolveConflictText(oneConflict, block, 'incoming');
-    const ledger = new ResolutionStateLedger(oneConflict, [block]);
-    ledger.recordAcceptance(oneConflict, after, block, 'incoming');
-
-    expect(ledger.stateFor(after, []).get(block.id)).toBe('resolved-incoming');
-    expect(ledger.stateFor(oneConflict, [block]).get(block.id)).toBe('unresolved');
   });
 });

@@ -43,7 +43,6 @@ const initialSnapshot: ConflictEditorSnapshot = {
   totalConflicts: sampleSession.conflicts.length,
   canUndo: false,
   canRedo: false,
-  statuses: new Map(sampleSession.conflicts.map((block) => [block.id, 'unresolved'])),
 };
 
 const sourceComparisons = {

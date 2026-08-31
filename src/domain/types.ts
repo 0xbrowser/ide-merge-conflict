@@ -17,14 +17,6 @@ export interface ConflictRange {
 /** `base` is used by the Merge Editor MVP's Ignore action. */
 export type ResolutionChoice = 'current' | 'incoming' | 'both' | 'both-incoming-first' | 'base';
 
-export type ConflictResolutionStatus =
-  | 'unresolved'
-  | 'resolved-current'
-  | 'resolved-incoming'
-  | 'resolved-both'
-  | 'resolved-base'
-  | 'manually-edited';
-
 export interface ConflictSection {
   readonly label: string;
   readonly text: string;
@@ -53,7 +45,6 @@ export interface ResolvedResult {
   readonly conflictId: string;
   readonly choice: ResolutionChoice;
   readonly text: string;
-  readonly status: ConflictResolutionStatus;
 }
 
 export interface MergeSession {
